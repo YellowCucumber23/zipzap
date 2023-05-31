@@ -1,5 +1,7 @@
+import "./App.css";
 import React, {useEffect, useState} from "react";
-import ChessClock from "./components/ChessClock"
+import {Chessboard} from "react-chessboard"
+import ChessClock from "./components/ChessClock";
 
 function App(){
   const [backendData, setBackendData] = useState([{}])
@@ -15,8 +17,9 @@ function App(){
   // }, [])
 
   return(
-    <div>
-      <ChessClock></ChessClock>
+    <div className= "board-container">
+      <Chessboard></Chessboard>
+      <ChessClock/>
     </div>
   )
 }
