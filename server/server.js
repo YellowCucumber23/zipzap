@@ -1,16 +1,24 @@
 import pkg from 'node-uci'
 import express from 'express';
 
+const startFen = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"
+
+
 const { Engine } = pkg;
-const somePath = "/opt/homebrew/bin/stockfish"
-const engine = new Engine(somePath)
+const enginePath = "/opt/homebrew/bin/stockfish"
+const engine = new Engine(enginePath)
+await engine.init()
+await engine.setoption('MultiPV', '4')
+await engine.ucinewgame()
 
 const app = express()
 
 async function getScore(){
-    await engine.init()
+    await engine.isready()
+    engine.position(startFen)
     const result = await engine.go({depth: 3})
-    await engine.quit()
+    console.log(result)
+
     return (result)
 }
 
