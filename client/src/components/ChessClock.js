@@ -2,9 +2,9 @@ import React, {useState, useEffect} from "react";
 import "./ChessClock.css"
 
 function ChessClock(){
-    const [side, setSide] = useState("White")
-    const [blackTime, setBlackTime] = useState(10)
-    const [whiteTime, setWhiteTime] = useState(10)
+    const [side, setSide] = useState("Start")
+    const [blackTime, setBlackTime] = useState(600)
+    const [whiteTime, setWhiteTime] = useState(600)
 
     function setTime(time){
         let minutes = Math.floor(time / 60)
@@ -27,7 +27,7 @@ function ChessClock(){
                 }
             });
           }, 1000);
-        } else {
+        } else if(side === 'Black'){
             interval = setInterval(() => {
                 setBlackTime((prevTime) => {
                     if(prevTime > 0){
@@ -43,19 +43,32 @@ function ChessClock(){
 
     return(
         <div className="container">
-            <h1>Current Turn: {side}</h1>
-            <div>
-                <h1>{setTime(whiteTime)}</h1>
-                <h1>{setTime(blackTime)}</h1>
+
+            <div className="black-timer">
+                <div className="black-timer-info">
+                    <h1>{setTime(blackTime)}</h1>
+                    <button onClick = {() => setSide("Black")}>
+                        Black Timer
+                    </button>
+                </div>
             </div>
 
-            <button onClick = {() => setSide("Black")}>
-                Black Timer
-            </button>
+            <div className="header-container">
+                <div className="header-info">
+                    <h1>Current Turn: {side}</h1>
+                    <h1>Score: +0.34</h1>
+                </div>
+            </div>
 
-            <button onClick = {() => setSide("White")}>
-                White Timer
-            </button>
+            <div className= "white-timer">
+                    <div className="white-timer-info">
+                    <h1>{setTime(whiteTime)}</h1>
+                    <button onClick = {() => setSide("White")}>
+                    White Timer
+                    </button>
+                </div>
+            </div>
+
         </div>
     )
 }

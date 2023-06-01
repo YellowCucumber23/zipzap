@@ -17,8 +17,10 @@ function App(){
   // }, [])
 
   return(
-    <div className= "board-container">
-      <Chessboard></Chessboard>
+    <div>
+      <div className= "board-container">
+        <Chessboard/>
+      </div>
       <ChessClock/>
     </div>
   )

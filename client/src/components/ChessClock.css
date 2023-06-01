@@ -1,3 +1,51 @@
 .container {
-    border: 2px solid red; /* Add a solid border with a specific color */
+    display: flex;
+  }
+
+  .header-container{
+    width: 600px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .header-info{
+    text-align: center;
+  }
+
+  .white-timer {
+    flex: 1;
+    padding: 10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .white-timer-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .white-timer-info h1 {
+    margin-bottom: 10px;
+  }
+
+  .black-timer {
+    flex: 1;
+    padding: 10px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .black-timer-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+  }
+  
+  .black-timer-info h1 {
+    margin-bottom: 10px;
   }
