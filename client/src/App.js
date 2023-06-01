@@ -1,20 +1,12 @@
 import "./App.css";
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {Chessboard} from "react-chessboard"
 import ChessClock from "./components/ChessClock";
+import {Chess} from "chess.js";
 
 function App(){
-  const [backendData, setBackendData] = useState([{}])
+  const [game, setGame] = useState(new Chess())
 
-  // useEffect(() => {
-  //   fetch("/api").then(
-  //     response => response.json()
-  //   ).then(
-  //     data => {
-  //       setBackendData(data)
-  //     }
-  //   )
-  // }, [])
 
   return(
     <div>

@@ -5,6 +5,7 @@ function ChessClock(){
     const [side, setSide] = useState("Start")
     const [blackTime, setBlackTime] = useState(600)
     const [whiteTime, setWhiteTime] = useState(600)
+    const [backendData, setBackendData] = useState({})
 
     function setTime(time){
         let minutes = Math.floor(time / 60)
@@ -16,6 +17,14 @@ function ChessClock(){
 
     useEffect(() => {
         let interval;
+
+        fetch("/api").then(
+            response => response.json()
+          ).then(
+            data => {
+              setBackendData(data)
+            }
+          )
 
         if (side === 'White') {
           interval = setInterval(() => {
