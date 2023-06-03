@@ -7,6 +7,13 @@ yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
 
+#Arduino Stuff
+arduino/.vscode/.browse.c_cpp.db*
+arduino/.vscode/c_cpp_properties.json
+arduino/.vscode/launch.json
+arduino/.vscode/ipch
+arduino/.pio
+
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
