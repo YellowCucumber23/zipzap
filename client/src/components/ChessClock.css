@@ -1,7 +1,13 @@
 .container {
     display: flex;
   }
-
+  
+  .board-container {
+    width: 600px;
+    height: 600px; 
+    margin: 0 auto; 
+    /* bring your own prefixes */
+  }
   .header-container{
     width: 600px;
     display: flex;

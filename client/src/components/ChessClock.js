@@ -1,11 +1,15 @@
 import React, {useState, useEffect} from "react";
 import "./ChessClock.css"
+import {Chessboard} from "react-chessboard"
+
+export let exportData = {}
 
 function ChessClock(){
     const [side, setSide] = useState("Start")
     const [blackTime, setBlackTime] = useState(600)
     const [whiteTime, setWhiteTime] = useState(600)
     const [backendData, setBackendData] = useState({})
+    const [positionKey, setPositionKey] = useState(0)
 
     function setTime(time){
         let minutes = Math.floor(time / 60)
@@ -23,6 +27,7 @@ function ChessClock(){
           ).then(
             data => {
               setBackendData(data)
+              console.log(backendData['FEN'])
             }
           )
 
@@ -50,34 +55,42 @@ function ChessClock(){
         return () => clearInterval(interval);
       },[side]);
 
+      useEffect(() => {
+        setPositionKey((prevKey) => prevKey + 1);
+      }, [backendData["FEN"]]);
     return(
-        <div className="container">
-
-            <div className="black-timer">
-                <div className="black-timer-info">
-                    <h1>{setTime(blackTime)}</h1>
-                    <button onClick = {() => setSide("Black")}>
-                        Black Timer
-                    </button>
-                </div>
+        <div>
+            <div className= "board-container">
+            <Chessboard key={positionKey} position = {backendData['FEN']}/>
             </div>
+            <div className="container">
 
-            <div className="header-container">
-                <div className="header-info">
-                    <h1>Current Turn: {side}</h1>
-                    <h1>Score: +0.34</h1>
+                <div className="black-timer">
+                    <div className="black-timer-info">
+                        <h1>{setTime(blackTime)}</h1>
+                        <button onClick = {() => setSide("Black")}>
+                            Black Timer
+                        </button>
+                    </div>
                 </div>
-            </div>
 
-            <div className= "white-timer">
-                    <div className="white-timer-info">
-                    <h1>{setTime(whiteTime)}</h1>
-                    <button onClick = {() => setSide("White")}>
-                    White Timer
-                    </button>
+                <div className="header-container">
+                    <div className="header-info">
+                        <h1>Current Turn: {side}</h1>
+                        <h1>Score: +0.34</h1>
+                    </div>
                 </div>
-            </div>
 
+                <div className= "white-timer">
+                        <div className="white-timer-info">
+                        <h1>{setTime(whiteTime)}</h1>
+                        <button onClick = {() => setSide("White")}>
+                        White Timer
+                        </button>
+                    </div>
+                </div>
+
+            </div>
         </div>
     )
 }

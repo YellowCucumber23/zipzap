@@ -26,10 +26,11 @@ async function getScore(){
     const result = await engine.go({depth: 3})
 
     frontEndData['move'] = result['bestmove']
+    frontEndData['FEN'] = "r1bqkb1r/pppppppp/2n4n/8/5P1P/8/PPPPP1P1/RNBQKBNR w KQkq -"
     //frontEndData['score'] = score of the previous move
     //frontEndData['board'] = object containing board
 
-    return (result)
+    return (frontEndData)
 }
 
 
