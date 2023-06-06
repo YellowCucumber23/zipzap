@@ -1,17 +1,19 @@
 import "./App.css";
-import React, {useState} from "react";
-import {Chessboard} from "react-chessboard"
+import React, {useEffect} from "react";
 import ChessClock from "./components/ChessClock";
-import {Chess} from "chess.js";
+import {Chessboard} from "react-chessboard"
+import io from 'socket.io-client';
 
+const socket = io('http://localhost:5000');
 
 function App(){
-  const [game, setGame] = useState(new Chess())
-
 
   return(
-    <div>
-      <ChessClock/>
+    <div> 
+      <div className= "board-container">
+            <Chessboard/>
+      </div>
+      <ChessClock socket={socket}/>
     </div>
   )
 }

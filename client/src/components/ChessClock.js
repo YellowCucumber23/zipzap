@@ -1,79 +1,37 @@
 import React, {useState, useEffect} from "react";
 import "./ChessClock.css"
-import {Chessboard} from "react-chessboard"
 
-export let exportData = {}
-
-function ChessClock(){
+function ChessClock({socket}){
     const [side, setSide] = useState("Start")
-    const [blackTime, setBlackTime] = useState(600)
-    const [whiteTime, setWhiteTime] = useState(600)
-    const [backendData, setBackendData] = useState({})
-    const [positionKey, setPositionKey] = useState(0)
-
-    function setTime(time){
-        let minutes = Math.floor(time / 60)
-        let seconds = time % 60
-
-        if (seconds < 10) {seconds = "0"+seconds;}
-        return minutes + ':' + seconds
-    }
+    const [render, renderSide] = useState(0)
 
     useEffect(() => {
-        let interval;
+        socket.on('recieve_side', (data) => {
+          setSide(data);
+        });
+    
+        return () => {
+          socket.disconnect();
+        };
+      }, [render]);
 
-        fetch("/api").then(
-            response => response.json()
-          ).then(
-            data => {
-              setBackendData(data)
-              console.log(backendData['FEN'])
-            }
-          )
 
-        if (side === 'White') {
-          interval = setInterval(() => {
-            setWhiteTime((prevTime) => {
-                if(prevTime > 0){
-                    return prevTime - 1
-                } else {
-                    return prevTime
-                }
-            });
-          }, 1000);
-        } else if(side === 'Black'){
-            interval = setInterval(() => {
-                setBlackTime((prevTime) => {
-                    if(prevTime > 0){
-                        return prevTime - 1
-                    } else {
-                        return prevTime
-                    }
-                });
-              }, 1000);
-        }
-        return () => clearInterval(interval);
-      },[side]);
-
-      useEffect(() => {
-        setPositionKey((prevKey) => prevKey + 1);
-      }, [backendData["FEN"]]);
     return(
         <div>
-            <div className= "board-container">
-            <Chessboard key={positionKey} position = {backendData['FEN']}/>
-            </div>
             <div className="container">
-
                 <div className="black-timer">
                     <div className="black-timer-info">
-                        <h1>{setTime(blackTime)}</h1>
-                        <button onClick = {() => setSide("Black")}>
+                        <h1>Black time</h1>
+                        <button onClick={() => {
+                            socket.emit("send_side")
+                            renderSide(render+1)
+                            }}>
                             Black Timer
                         </button>
                     </div>
                 </div>
 
+                
                 <div className="header-container">
                     <div className="header-info">
                         <h1>Current Turn: {side}</h1>
@@ -83,13 +41,12 @@ function ChessClock(){
 
                 <div className= "white-timer">
                         <div className="white-timer-info">
-                        <h1>{setTime(whiteTime)}</h1>
-                        <button onClick = {() => setSide("White")}>
+                        <h1>White time</h1>
+                        <button onClick={() => socket.emit("send_side")}>
                         White Timer
                         </button>
                     </div>
                 </div>
-
             </div>
         </div>
     )
