@@ -1,23 +1,24 @@
 import React, {useState, useEffect} from "react";
 import "./ChessClock.css"
+import {Chessboard} from "react-chessboard"
 
 function ChessClock({socket}){
     const [side, setSide] = useState("Start")
     const [render, renderSide] = useState(0)
+    const [fen, setFen] = useState("");
 
     useEffect(() => {
         socket.on('recieve_side', (data) => {
           setSide(data);
+          console.log("Data from recieve_side: ", side)
         });
-    
-        return () => {
-          socket.disconnect();
-        };
-      }, [render]);
-
+      }, [socket]);
 
     return(
         <div>
+            <div className= "board-container">
+                <Chessboard/>
+            </div>
             <div className="container">
                 <div className="black-timer">
                     <div className="black-timer-info">
