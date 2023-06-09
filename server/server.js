@@ -2,9 +2,8 @@ import pkg from 'node-uci'
 import express from 'express';
 import * as http from 'http';
 import {Server} from "socket.io"
-import { start } from 'repl';
-// import { SerialPort } from 'serialport'
-// import { ReadlineParser } from '@serialport/parser-readline'
+import { SerialPort } from 'serialport'
+import { ReadlineParser } from '@serialport/parser-readline'
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server,{
@@ -18,7 +17,7 @@ const io = new Server(server,{
 var frontEndData = {};
 var prevScore = 0;
 
-//Send data to server
+//Chess Stuff
 const startFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq e3 0 1"
 const fen1 = "rnbqkbnr/p1p2ppp/4p3/1p1p4/4P3/2NB4/PPPP1PPP/R1BQK1NR w KQkq -"
 const { Engine } = pkg;
@@ -58,6 +57,9 @@ function getScore(engineInfo, side){
 
 async function getFrontEndData(currentFen){
     await engine.isready()
+    parser.on("data", (data) => {
+        frontEndData['test'] = data
+    })
     engine.position(currentFen)
     const result = await engine.go({depth: 3})
     frontEndData['move'] = result['bestmove']
@@ -68,9 +70,23 @@ async function getFrontEndData(currentFen){
     return (frontEndData)
 }
 
+//Serial port
+const serialport = new SerialPort({ path: '/dev/cu.usbmodem21301', baudRate: 9600 })
+const parser = serialport.pipe(new ReadlineParser({ delimiter: '\r\n' }));
+
 //Initialize sockets
 io.on("connection", (socket) => {
     console.log('New client connected:', socket.id );
+
+    socket.on("send_test",() => {
+        const promise = getFrontEndData(fen1)
+        promise.then(result => {
+            socket.emit("recieve_test", result['test'])
+        }).catch(error => {
+            console.error(error)
+            socket.emit("recieve_test", error.message)
+        })
+    });
 
     socket.on("send_side",() => {
         const promise = getFrontEndData(fen1)

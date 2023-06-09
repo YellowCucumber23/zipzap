@@ -34,6 +34,10 @@ function ChessClock({socket}){
             setScore(data)
             console.log(data)
         })
+
+        socket.on('recieve_test', (data) => {
+            console.log(data)
+        })
       }, [socket]);
 
     useEffect(() => {
@@ -76,6 +80,7 @@ function ChessClock({socket}){
                             socket.emit("send_side")
                             socket.emit("send_fen")
                             socket.emit("send_side")
+                            socket.emit("send_test")
                             renderSide(render+1)
                             }}>
                             Black Timer
@@ -98,6 +103,7 @@ function ChessClock({socket}){
                             socket.emit("send_side")
                             socket.emit("send_fen")
                             socket.emit("send_score")
+                            socket.emit("send_test")
                             renderSide(render+1)
                             }}>
                         White Timer
