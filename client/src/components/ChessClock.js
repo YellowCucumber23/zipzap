@@ -85,6 +85,12 @@ function ChessClock({socket}){
                             }}>
                             Black Timer
                         </button>
+                        <button onClick={() =>{
+                            socket.emit("turn_on_led")
+                        }}>LED ON</button>
+                        <button onClick={() =>{
+                            socket.emit("turn_off_led")
+                        }}>LED OFF</button>
                     </div>
                 </div>
 

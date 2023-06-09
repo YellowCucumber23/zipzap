@@ -118,6 +118,14 @@ io.on("connection", (socket) => {
         })
     })
 
+    socket.on("turn_on_led", () => {
+        serialport.write("1")
+    })
+
+    socket.on("turn_off_led", () => {
+        serialport.write("0")
+    })
+
     socket.on('disconnect', () => {
         console.log('Client disconnected.');
     });

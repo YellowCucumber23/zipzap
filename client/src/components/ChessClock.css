@@ -10,6 +10,17 @@
     align-items: center;
   }
 
+  .header-container{
+    width: 600px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .header-info{
+    text-align: center;
+  }
+
   .white-timer-info {
     display: flex;
     flex-direction: column;
