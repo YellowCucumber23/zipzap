@@ -35,9 +35,6 @@ function ChessClock({socket}){
             console.log(data)
         })
 
-        socket.on('recieve_test', (data) => {
-            console.log(data)
-        })
       }, [socket]);
 
     useEffect(() => {
@@ -79,18 +76,12 @@ function ChessClock({socket}){
                         <button onClick={() => {
                             socket.emit("send_side")
                             socket.emit("send_fen")
-                            socket.emit("send_side")
-                            socket.emit("send_test")
+                            socket.emit("send_score")
+                            socket.emit("send_arduino_score")
                             renderSide(render+1)
                             }}>
-                            Black Timer
+                            Black End Turn
                         </button>
-                        <button onClick={() =>{
-                            socket.emit("turn_on_led")
-                        }}>LED ON</button>
-                        <button onClick={() =>{
-                            socket.emit("turn_off_led")
-                        }}>LED OFF</button>
                     </div>
                 </div>
 
@@ -99,6 +90,7 @@ function ChessClock({socket}){
                     <div className="header-info">
                         <h1>Current Turn: {side}</h1>
                         <h1>Score: {score}</h1>
+                        <button onClick={() => setSide("White")}>Start Game</button>
                     </div>
                 </div>
 
@@ -109,10 +101,10 @@ function ChessClock({socket}){
                             socket.emit("send_side")
                             socket.emit("send_fen")
                             socket.emit("send_score")
-                            socket.emit("send_test")
+                            socket.emit("send_arduino_score")
                             renderSide(render+1)
                             }}>
-                        White Timer
+                        White End Turn
                         </button>
                     </div>
                 </div>

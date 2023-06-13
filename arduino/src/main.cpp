@@ -15,6 +15,15 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
+  /*
+  1. Detect what move was made and create the fen
+  2. send the fen over to server
+  3. recieve the shocking signal
+  4. shock the boi
+  */
+
+
+
   // Sending stuff to server
   // percent = round(analogRead(pot_pin) / 1024.0 * 100);
 
@@ -23,6 +32,8 @@ void loop() {
   //   prev_percent = percent;
   // }
   // delay(100);
+
+  int score = 0;
 
   if(Serial.available() > 0){
     String input_string = "";
