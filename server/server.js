@@ -4,6 +4,8 @@ import * as http from 'http';
 import {Server} from "socket.io"
 import { SerialPort } from 'serialport'
 import { ReadlineParser } from '@serialport/parser-readline'
+import {Chess} from "chess.js"
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server,{
@@ -18,8 +20,9 @@ var frontEndData = {};
 var prevScore = 0;
 
 //Chess Stuff
-const startFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq e3 0 1"
+const startFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 const fen1 = "rnb1kb1r/ppppqppp/8/8/2BN4/8/PPPn1PPP/RNB1K2R w KQkq -"
+const chess = new Chess(startFen);
 const { Engine } = pkg;
 const enginePath = "/opt/homebrew/bin/stockfish"
 const engine = new Engine(enginePath)
@@ -40,7 +43,6 @@ function getSide(currentFen){
 }
 
 function getScore(engineInfo, side){
-
     let scoreArray = [];
     for(var i  = 1; i < engineInfo['info'].length; i++){
         scoreArray.push(engineInfo['info'][i]['score']['value'])
@@ -75,12 +77,16 @@ const parser = serialport.pipe(new ReadlineParser({ delimiter: '\r\n' }));
 io.on("connection", (socket) => {
     console.log('New client connected:', socket.id );
 
+    //Client signals that turn is over and to send shock signal to arduino
     socket.on("send_arduino_score",() => {
-        const promise = getFrontEndData(fen1)
+        //get the move made from arduino
+
+        //send signals back to arduino
+        const promise = getFrontEndData(chess.fen())
         promise.then(result => {
             if(result['score'] < 0) {
                 console.log("send black shock signal")
-                serialport.write("1")
+                serialport.write("1")     //Send signal to serialport
             } else {
                 console.log("send white shock signal")
                 serialport.write("0")
@@ -90,30 +96,33 @@ io.on("connection", (socket) => {
         })
     });
 
+    //client sends signal to send the side
     socket.on("send_side",() => {
-        const promise = getFrontEndData(fen1)
+        const promise = getFrontEndData(chess.fen())
         promise.then(result => {
-            socket.emit("recieve_side", result['side'])
+            socket.emit("recieve_side", result['side'])   //Server sends side to client
         }).catch(error => {
             console.error(error)
             socket.emit("recieve_side", error.message)
         })
     });
 
+    //client sends signal to send the fen
     socket.on("send_fen",() => {
-        const promise = getFrontEndData(fen1)
+        const promise = getFrontEndData(chess.fen())
         promise.then(result => {
-            socket.emit("recieve_fen", result['FEN'])
+            socket.emit("recieve_fen", result['FEN'])  //Server sends the fen to client
         }).catch(error => {
             console.error(error)
             socket.emit("recieve_fen", error.message)
         })
     });
 
+    //client sends signal to send the score to display
     socket.on("send_score", () => {
-        const promise = getFrontEndData(fen1)
+        const promise = getFrontEndData(chess.fen())
         promise.then(result => {
-            socket.emit("recieve_score", result['score'])
+            socket.emit("recieve_score", result['score']) //Server sends score to client
         }).catch(error => {
             console.error(error)
             socket.emit("recieve_score", error.message)
@@ -127,7 +136,7 @@ io.on("connection", (socket) => {
 
 
 server.listen(5000, () => {
-    const resultPromise = getFrontEndData(fen1);
+    const resultPromise = getFrontEndData(chess.fen());
 
     resultPromise.then(result => {
         console.log(result)

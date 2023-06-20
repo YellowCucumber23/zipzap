@@ -1,8 +1,9 @@
 #include <Arduino.h>
 
 // put function declarations here:
-int myFunction(int, int);
+String get_move(int board[8][8]);
 
+enum pieces{EMPTY, wP, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK};
 // int pot_pin = A0;
 int percent = 0;
 int prev_percent = 0;
@@ -33,25 +34,24 @@ void loop() {
   // }
   // delay(100);
 
-  int score = 0;
+  // int score = 0;
 
-  if(Serial.available() > 0){
-    String input_string = "";
+  // if(Serial.available() > 0){
+  //   String input_string = "";
 
-    while(Serial.available() > 0){
-      input_string += char(Serial.read());
-    }
+  //   while(Serial.available() > 0){
+  //     input_string += char(Serial.read());
+  //   }
 
-    if(input_string == "1"){
-      digitalWrite(A0, HIGH);
-    } else {
-      digitalWrite(A0, LOW);
-    }
-  }
+  //   if(input_string == "1"){
+  //     digitalWrite(A0, HIGH);
+  //   } else {
+  //     digitalWrite(A0, LOW);
+  //   }
+  // }
   
 }
 
 // put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+String get_move(int board[8][8]){
 }
