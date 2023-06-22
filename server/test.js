@@ -2,10 +2,8 @@ import {Chess} from "chess.js"
 
 const chess = new Chess()
 
-chess.move('e4')
-chess.move('e5')
-// chess.move('f4')
-chess.move('Nf3')
-chess.move("Bc5")
+chess.move('Ng1xh3')
+chess.move('Pd7xd5')
+// chess.move('Pe4xd5')
 
 console.log(chess.ascii())
