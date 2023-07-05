@@ -8,10 +8,6 @@ bool compare_board(int cur[8][8], int prev[8][8]);
 enum pieces{EMPTY, wP, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK};
 char pieces[] = {'0', 'P', 'N', 'B', 'R', 'Q', 'K', 'P', 'N', 'B', 'R', 'Q', 'K'};
 
-// int pot_pin = A0;
-int percent = 0;
-int prev_percent = 0;
-
 int cur_board[8][8] = {
   {wR, wN, wB, wQ, wK, wB, EMPTY, wR}, 
   {wP, wP, wP, wP, wP, wP, wP, wP}, 
@@ -36,16 +32,34 @@ int prev_board[8][8] = {
 
 String prev_move = "";   //Format: piece, from, x, to
 String move;
+// int pot_pin = A0;
+int percent = 0;
+int prev_percent = 0;
+
+int led_pin = A9;
+int reed_pin = A0;
+
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
-  
-  Serial.println(get_move(cur_board, prev_board));
+  pinMode(reed_pin, INPUT_PULLUP);	// Enable internal pull-up for the reed switch
+	pinMode(led_pin, OUTPUT);
+  Serial.println("Started");
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  
+  int proximity = digitalRead(reed_pin); // Read the state of the switch
+	
+	// If the pin reads low, the switch is closed.
+	if (proximity == LOW) {
+		Serial.println("Switch closed");
+		digitalWrite(led_pin, HIGH);	// Turn the LED on
+	}
+	else {
+		Serial.println("Switch opened");
+		digitalWrite(led_pin, LOW);		// Turn the LED off
+	}
 
   //Recieve input from sensors
 

@@ -22,7 +22,7 @@ var prevScore = 0;
 //Chess Stuff
 const startFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 const fen1 = "rnb1kb1r/ppppqppp/8/8/2BN4/8/PPPn1PPP/RNB1K2R w KQkq -"
-const chess = new Chess(startFen);
+const chess = new Chess(fen1);
 const { Engine } = pkg;
 const enginePath = "/opt/homebrew/bin/stockfish"
 const engine = new Engine(enginePath)
