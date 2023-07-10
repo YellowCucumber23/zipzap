@@ -1,13 +1,8 @@
 #include <Arduino.h>
 
-// put function declarations here:
-String get_move(int board[8][8], int prev_board[8][8]);
-void print_board(int board[8][8]);
-bool compare_board(int cur[8][8], int prev[8][8]);
-
+/*GLOBAL VARIABLES*/
 enum pieces{EMPTY, wP, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK};
 char pieces[] = {'0', 'P', 'N', 'B', 'R', 'Q', 'K', 'P', 'N', 'B', 'R', 'Q', 'K'};
-
 int sensor_board[8][8] = {
   {23,25,27,29,31,33,35,37},
   {39,41,43,45,47,49,51,53},
@@ -41,77 +36,70 @@ int prev_board[8][8] = {
   {bR, bN, bB, bQ, bK, bB, bN, bR}
 };
 
-String prev_move = "";   //Format: piece, from, x, to
+String prev_move = "";
 String move;
-// int pot_pin = A0;
 int percent = 0;
 int prev_percent = 0;
 
 int led_pin = A9;
-int reed_pin = A0;
+int button_pin = A0;
 
+
+/*FUNCTION DECLARATIONS*/
+String get_move(int board[8][8], int prev_board[8][8]);
+void print_board(int board[8][8]);
+bool compare_board(int cur[8][8], int prev[8][8]);
+
+/*SETUP FUNCTION*/
 void setup() {
-  // put your setup code here, to run once:
   Serial.begin(9600);
-  pinMode(reed_pin, INPUT_PULLUP);	// Enable internal pull-up for the reed switch
-	pinMode(led_pin, OUTPUT);
-  print_board(prev_board);
-  print_board(cur_board);
-  Serial.println(get_move(cur_board,prev_board));
+  pinMode(led_pin, OUTPUT);
+  pinMode(button_pin, INPUT_PULLUP);
 
-  for(int i = 7; i >= 0; --i){
-    for(int j = 0; j < 8; ++j){
-      pinMode(sensor_board[i][j], INPUT_PULLUP);
-    }
-  }
+  // for(int i = 7; i >= 0; --i){
+  //   for(int j = 0; j < 8; ++j){
+  //     pinMode(sensor_board[i][j], INPUT_PULLUP);
+  //   }
+  // }
   
 }
 
+/*MAIN FUNCTION*/
 void loop() {
-  // put your main code here, to run repeatedly:
-  // int proximity = digitalRead(reed_pin); // Read the state of the switch
-	
-	// // If the pin reads low, the switch is closed.
-	// if (proximity == LOW) {
-	// 	Serial.println("Switch closed");
-	// 	digitalWrite(led_pin, HIGH);	// Turn the LED on
-	// }
-	// else {
-	// 	Serial.println("Switch opened");
-	// 	digitalWrite(led_pin, LOW);		// Turn the LED off
-	// }
+  int state = digitalRead(button_pin);
 
-  //Recieve input from sensors
+	if (state == LOW) {
+    digitalWrite(led_pin, HIGH);
+    if(compare_board(cur_board, prev_board) == false){  //Compare the board and get the move
+      move = get_move(cur_board, prev_board);
+    }
 
-  // Sending signals to server
-  // if(compare_board(cur_board, prev_board) == false){
-  //   move = get_move(cur_board, prev_board);
-  // }
+    if(move != prev_move){     //Only print if the previous move is not the same
+      Serial.println(move);
+      prev_move = move;
+    }
 
-  // if(move != prev_move){
-  //   Serial.println(move);
-  //   prev_move = move;
-  // }
+    if(Serial.available() > 0){    //Recieve the the shock signal from the server
+      String input_string = "";
 
-  
-  // Sending signal to relay units
-  // if(Serial.available() > 0){
-  //   String input_string = "";
+      while(Serial.available() > 0){
+        input_string += char(Serial.read());
+      }
 
-  //   while(Serial.available() > 0){
-  //     input_string += char(Serial.read());
-  //   }
-
-  //   if(input_string == "1"){
-  //     digitalWrite(A0, HIGH);
-  //   } else {
-  //     digitalWrite(A0, LOW);
-  //   }
-  // }
+      if(input_string == "1"){
+        // digitalWrite(A0, HIGH);
+      } else {
+        // digitalWrite(A0, LOW);
+      }
+    }
+	}
+	else {
+    digitalWrite(led_pin,LOW);
+	}
   
 }
 
-// put function definitions here:
+/*FUNCTION DEFINITIONS*/
 String get_move(int board[8][8], int prev_board[8][8]){
   char piece = ' ';
   String from = "";

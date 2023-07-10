@@ -6,6 +6,8 @@ import { SerialPort } from 'serialport'
 import { ReadlineParser } from '@serialport/parser-readline'
 import {Chess} from "chess.js"
 
+
+/*SERIAL PORT, SERVER SETUP AND CLIENT CONNECTION*/
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server,{
@@ -14,12 +16,10 @@ const io = new Server(server,{
         methods: ["GET", "POST"],
     },
 })
+const serialport = new SerialPort({ path: '/dev/cu.usbmodem21301', baudRate: 9600 })
+const parser = serialport.pipe(new ReadlineParser({ delimiter: '\r\n' }));
 
-//Global Stuff
-var frontEndData = {};
-var prevScore = 0;
-
-//Chess Stuff
+/*CHESS SETUP*/
 const startFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 const fen1 = "rnb1kb1r/ppppqppp/8/8/2BN4/8/PPPn1PPP/RNB1K2R w KQkq -"
 const chess = new Chess(fen1);
@@ -30,6 +30,7 @@ await engine.init()
 await engine.setoption('MultiPV', '10')
 await engine.ucinewgame()
 
+var frontEndData = {};
 function getSide(currentFen){
     for(var i = 0; i < currentFen.length; i++){
         if(currentFen.charAt(i) == " "){
@@ -69,17 +70,17 @@ async function getFrontEndData(currentFen){
     return (frontEndData)
 }
 
-//Serial port
-const serialport = new SerialPort({ path: '/dev/cu.usbmodem21301', baudRate: 9600 })
-const parser = serialport.pipe(new ReadlineParser({ delimiter: '\r\n' }));
-
-//Initialize sockets
+/* INITIALIZE WEB SOCKET CONNECTIONS */
 io.on("connection", (socket) => {
     console.log('New client connected:', socket.id );
 
     //Client signals that turn is over and to send shock signal to arduino
     socket.on("send_arduino_score",() => {
         //get the move made from arduino
+        parser.on('data', (data) => {
+            chess.move(data);
+            console.log(data);
+        });
 
         //send signals back to arduino
         const promise = getFrontEndData(chess.fen())
