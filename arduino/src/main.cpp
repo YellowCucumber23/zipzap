@@ -36,7 +36,7 @@ int prev_board[8][8] = {
   {bR, bN, bB, bQ, bK, bB, bN, bR}
 };
 
-String prev_move = "";
+String prev_move = "nothing";
 String move;
 int percent = 0;
 int prev_percent = 0;
@@ -69,16 +69,16 @@ void loop() {
   int state = digitalRead(button_pin);
 
 	if (state == LOW) {
-    digitalWrite(led_pin, HIGH);
     if(compare_board(cur_board, prev_board) == false){  //Compare the board and get the move
       move = get_move(cur_board, prev_board);
-      Serial.println(move);
+      // Serial.println(move);
     }
 
     if(move != prev_move){     //Only print if the previous move is not the same
       Serial.println(move);
       prev_move = move;
     }
+	}
 
     if(Serial.available() > 0){    //Recieve the the shock signal from the server
       String input_string = "";
@@ -88,17 +88,11 @@ void loop() {
       }
 
       if(input_string == "1"){
-        // digitalWrite(A0, HIGH);
+        digitalWrite(led_pin, HIGH);
       } else {
-        // digitalWrite(A0, LOW);
+        digitalWrite(led_pin, LOW);
       }
     }
-    digitalWrite(led_pin,LOW);
-    // delay(1000);
-	}
-	else {
-    digitalWrite(led_pin,HIGH);
-	}
   
 }
 

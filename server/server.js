@@ -82,6 +82,7 @@ io.on("connection", (socket) => {
         // get the move made from arduino
         parser.on('data', (data) => {
             move = data;
+            console.log(move);
         });
     });
 
