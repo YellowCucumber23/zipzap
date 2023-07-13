@@ -85,15 +85,14 @@ io.on("connection", (socket) => {
     });
 
     socket.on("send_shock", () =>{
-        chess.move(move);
         //send signals back to arduino
         const promise = getFrontEndData(chess.fen())
         promise.then(result => {
             if(result['score'] < 0) {
-                console.log("send black shock signal")
+                console.log("Shocking White")
                 serialport.write("1")     //Send signal to serialport
             } else {
-                console.log("send white shock signal")
+                console.log("Shocking Black")
                 serialport.write("0")
             }
         }).catch(error => {
