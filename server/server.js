@@ -31,6 +31,7 @@ await engine.ucinewgame()
 
 var frontEndData = {};
 let move = "";
+let prevMove = '';
 let temp = false;
 
 function getSide(currentFen){
@@ -85,6 +86,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("send_shock", () =>{
+        chess.move(move);
         //send signals back to arduino
         const promise = getFrontEndData(chess.fen())
         promise.then(result => {
