@@ -6,7 +6,6 @@ import { SerialPort } from 'serialport'
 import { ReadlineParser } from '@serialport/parser-readline'
 import {Chess} from "chess.js"
 
-
 /*SERIAL PORT, SERVER SETUP AND CLIENT CONNECTION*/
 const app = express();
 const server = http.createServer(app);
@@ -22,7 +21,7 @@ const parser = serialport.pipe(new ReadlineParser({ delimiter: '\r\n' }));
 /*CHESS SETUP*/
 const startFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 const fen1 = "rnb1kb1r/ppppqppp/8/8/2BN4/8/PPPn1PPP/RNB1K2R w KQkq -"
-const chess = new Chess(fen1);
+const chess = new Chess();
 const { Engine } = pkg;
 const enginePath = "/opt/homebrew/bin/stockfish"
 const engine = new Engine(enginePath)
@@ -31,6 +30,9 @@ await engine.setoption('MultiPV', '10')
 await engine.ucinewgame()
 
 var frontEndData = {};
+let move = "";
+let temp = false;
+
 function getSide(currentFen){
     for(var i = 0; i < currentFen.length; i++){
         if(currentFen.charAt(i) == " "){
@@ -75,13 +77,15 @@ io.on("connection", (socket) => {
     console.log('New client connected:', socket.id );
 
     //Client signals that turn is over and to send shock signal to arduino
-    socket.on("send_arduino_score",() => {
-        //get the move made from arduino
+    socket.on("get_move",() => {
+        // get the move made from arduino
         parser.on('data', (data) => {
-            chess.move(data);
-            console.log(data);
+            move = data;
         });
+    });
 
+    socket.on("send_shock", () =>{
+        chess.move(move);
         //send signals back to arduino
         const promise = getFrontEndData(chess.fen())
         promise.then(result => {
@@ -138,7 +142,6 @@ io.on("connection", (socket) => {
 
 server.listen(5000, () => {
     const resultPromise = getFrontEndData(chess.fen());
-
     resultPromise.then(result => {
         console.log(result)
     }).catch(error => {

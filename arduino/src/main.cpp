@@ -42,7 +42,7 @@ int percent = 0;
 int prev_percent = 0;
 
 int led_pin = A9;
-int button_pin = A0;
+int button_pin = A15;
 
 
 /*FUNCTION DECLARATIONS*/
@@ -72,6 +72,7 @@ void loop() {
     digitalWrite(led_pin, HIGH);
     if(compare_board(cur_board, prev_board) == false){  //Compare the board and get the move
       move = get_move(cur_board, prev_board);
+      Serial.println(move);
     }
 
     if(move != prev_move){     //Only print if the previous move is not the same
@@ -92,9 +93,11 @@ void loop() {
         // digitalWrite(A0, LOW);
       }
     }
+    digitalWrite(led_pin,LOW);
+    // delay(1000);
 	}
 	else {
-    digitalWrite(led_pin,LOW);
+    digitalWrite(led_pin,HIGH);
 	}
   
 }

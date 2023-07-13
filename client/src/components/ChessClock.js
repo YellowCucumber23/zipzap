@@ -74,10 +74,11 @@ function ChessClock({socket}){
                     <div className="black-timer-info">
                         <h1>{setTime(blackTime)}</h1>
                         <button onClick={() => {
-                            socket.emit("send_side")
-                            socket.emit("send_fen")
-                            socket.emit("send_score")
-                            socket.emit("send_arduino_score")
+                            socket.emit("get_move");
+                            socket.emit("send_shock");
+                            socket.emit("send_side");
+                            socket.emit("send_fen");
+                            socket.emit("send_score");
                             renderSide(render+1)
                             }}>
                             Black End Turn
@@ -98,10 +99,11 @@ function ChessClock({socket}){
                         <div className="white-timer-info">
                         <h1>{setTime(whiteTime)}</h1>
                         <button onClick={() => {
-                            socket.emit("send_side")
-                            socket.emit("send_fen")
-                            socket.emit("send_score")
-                            socket.emit("send_arduino_score")
+                            socket.emit("get_move")
+                            socket.emit("send_shock");
+                            socket.emit("send_side");
+                            socket.emit("send_fen");
+                            socket.emit("send_score");
                             renderSide(render+1)
                             }}>
                         White End Turn
