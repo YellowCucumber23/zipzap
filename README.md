@@ -1,7 +1,9 @@
 # Taser Chess
-1. Arduino gets input from sensor in the form of 2-D Array
-2. Parses the 2-D Array as a FEN
-3. Sends the FEN and the move made over the NodeJs/Express Server through a websocket
-4. Server process the data sent into the Arduino and uses node-uci to determine the score
-5. When the side switches(when the button is pressed), the front end retrieves the FEN/Score from the server through the websocket to update the board/score on the screen
-6. At the same time, the server will also send the score back to the arduino that will trigger the tens unit
+This project makes people get better at chess by analyzing the move made and providing realtime feedback in the form of electric shock. Everything is controlled by the NodeJs server which communicates with the webpage and arduino using Sockets.io and the serial monitor.
+
+## Usage: 
+Before cloning, make sure to have Stockfish installed and change the directory in the `engine path` variable. Also, make sure that the path to the arduino is correct in the `serial port` object. After cloning the repository, run `npm install` to install dependencies and upload the code to the arduino. After plugging in the arduino to your computer, run the server first with `node` followed by the the webpage with `npm run start`
+
+
+## Project Architechture
+![Alt text](images/Basic%20Diagram.jpg?raw=true "Title")
