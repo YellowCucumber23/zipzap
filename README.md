@@ -7,5 +7,3 @@ Before cloning, make sure to have Stockfish installed and change the directory i
 
 ## Project Architechture
 ![Alt text](images/Basic%20Diagram.jpg?raw=true "Title")
-
-## Board
